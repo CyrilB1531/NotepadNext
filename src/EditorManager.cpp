@@ -377,6 +377,17 @@ void EditorManager::setupEditor(ScintillaNext *editor)
         editor->setEOLMode(detectedEOLMode);
     }
 
+    // Files keep the encoding they were read with
+    if (!editor->isFile()) {
+        bool ok;
+        const ScintillaNext::BomType bom = ScintillaNext::stringToBomType(settings->defaultEncoding().toLower(), &ok);
+
+        if (ok)
+            editor->setBom(bom);
+        else
+            qWarning("Unexpected DefaultEncoding: %s", qUtf8Printable(settings->defaultEncoding()));
+    }
+
     // Decorators
     SmartHighlighter *s = new SmartHighlighter(editor);
     s->setEnabled(true);
