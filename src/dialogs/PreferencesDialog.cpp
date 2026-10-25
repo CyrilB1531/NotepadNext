@@ -99,6 +99,23 @@ PreferencesDialog::PreferencesDialog(ApplicationSettings *settings, QWidget *par
         ui->comboBoxLineEndings->setCurrentIndex(index == -1 ? 0 : index);
     });
 
+    ui->comboBoxDefaultEncoding->addItem(tr("UTF-8"), ScintillaNext::bomTypeToString(ScintillaNext::BomType::None));
+    ui->comboBoxDefaultEncoding->addItem(tr("UTF-8 BOM"), ScintillaNext::bomTypeToString(ScintillaNext::BomType::Utf8));
+    ui->comboBoxDefaultEncoding->addItem(tr("UTF-16BE BOM"), ScintillaNext::bomTypeToString(ScintillaNext::BomType::Utf16BE));
+    ui->comboBoxDefaultEncoding->addItem(tr("UTF-16LE BOM"), ScintillaNext::bomTypeToString(ScintillaNext::BomType::Utf16LE));
+
+    // Select the current one
+    index = ui->comboBoxDefaultEncoding->findData(settings->defaultEncoding().toLower());
+    ui->comboBoxDefaultEncoding->setCurrentIndex(index == -1 ? 0 : index);
+
+    connect(ui->comboBoxDefaultEncoding, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=, this](int index) {
+        settings->setDefaultEncoding(ui->comboBoxDefaultEncoding->itemData(index).toString());
+    });
+    connect(settings, &ApplicationSettings::defaultEncodingChanged, this, [=, this](QString defaultEncoding) {
+        int index = ui->comboBoxDefaultEncoding->findData(defaultEncoding.toLower());
+        ui->comboBoxDefaultEncoding->setCurrentIndex(index == -1 ? 0 : index);
+    });
+
     MapSettingToCheckBox(ui->checkBoxHighlightURLs, &ApplicationSettings::urlHighlighting, &ApplicationSettings::setURLHighlighting, &ApplicationSettings::urlHighlightingChanged);
     MapSettingToCheckBox(ui->checkBoxShowLineNumbers, &ApplicationSettings::showLineNumbers, &ApplicationSettings::setShowLineNumbers, &ApplicationSettings::showLineNumbersChanged);
     MapSettingToCheckBox(ui->checkBoxAutoCompletion, &ApplicationSettings::autoCompletion, &ApplicationSettings::setAutoCompletion, &ApplicationSettings::autoCompletionChanged);

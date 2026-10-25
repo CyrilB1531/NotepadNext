@@ -176,6 +176,35 @@ int ScintillaNext::stringToEolMode(QString eolMode)
         return -1;
 }
 
+QString ScintillaNext::bomTypeToString(BomType bom)
+{
+    switch (bom) {
+    case BomType::None:
+        return QStringLiteral("utf-8");
+    case BomType::Utf8:
+        return QStringLiteral("utf-8-bom");
+    case BomType::Utf16BE:
+        return QStringLiteral("utf-16be-bom");
+    case BomType::Utf16LE:
+        return QStringLiteral("utf-16le-bom");
+    }
+
+    return QString(); // unknown
+}
+
+ScintillaNext::BomType ScintillaNext::stringToBomType(const QString &bom, bool *ok)
+{
+    for (const BomType type : {BomType::None, BomType::Utf8, BomType::Utf16BE, BomType::Utf16LE}) {
+        if (bom == bomTypeToString(type)) {
+            if (ok) *ok = true;
+            return type;
+        }
+    }
+
+    if (ok) *ok = false;
+    return BomType::None;
+}
+
 int ScintillaNext::allocateIndicator(const QString &name)
 {
     return indicatorResources.requestResource(name);
@@ -316,9 +345,9 @@ bool ScintillaNext::canSaveToDisk() const
     // - It is marked as a temporary since as soon as it gets saved it is no longer a temporary buffer
     // - A modified file
     // - A missing file since as soon as it is saved it is no longer missing.
-    // - The encoding was changed since the file was last read or saved
+    // - A file whose encoding was changed since it was last read or saved. A new buffer has nothing to save until it is modified.
     return temporary ||
-           bomType != savedBomType ||
+           (bufferType != ScintillaNext::New && bomType != savedBomType) ||
            (bufferType == ScintillaNext::New && modify()) ||
            (bufferType == ScintillaNext::File && modify()) ||
             (bufferType == ScintillaNext::FileMissing);

@@ -120,6 +120,9 @@ public:
     BomType bom() const { return bomType; }
     void setBom(BomType bom);
 
+    static QString bomTypeToString(BomType bom);
+    static BomType stringToBomType(const QString &bom, bool *ok = Q_NULLPTR);
+
     bool isTemporary() const { return temporary; }
     void setTemporary(bool temp);
 
