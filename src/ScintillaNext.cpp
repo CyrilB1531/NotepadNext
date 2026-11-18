@@ -66,11 +66,13 @@ int bomLength(ScintillaNext::BomType bom)
     return 0;
 }
 
-static QFileDevice::FileError writeToDisk(const QByteArray &data, const QString &path, ScintillaNext::BomType bom)
+static QFileDevice::FileError writeToDisk(const QByteArray &data, const QString &path, ScintillaNext::BomType bom, bool atomic = false)
 {
     qInfo(Q_FUNC_INFO);
 
-    QFile file(path);
+    QFile directFile(path);
+    QSaveFile atomicFile(path);
+    QFileDevice &file = atomic ? static_cast<QFileDevice &>(atomicFile) : directFile;
     if (!file.open(QIODevice::WriteOnly)) {
         qWarning("writeToDisk() failed to open file %s: %s", qPrintable(path), qPrintable(file.errorString()));
         return file.error();
@@ -101,6 +103,9 @@ static QFileDevice::FileError writeToDisk(const QByteArray &data, const QString 
     else {
         file.write(data);
     }
+
+    if (atomic && file.error() == QFileDevice::NoError && !atomicFile.commit())
+        return atomicFile.error();
 
     return file.error();
 }
@@ -389,7 +394,7 @@ void ScintillaNext::close()
     deleteLater();
 }
 
-QFileDevice::FileError ScintillaNext::save()
+QFileDevice::FileError ScintillaNext::save(bool atomic)
 {
     qInfo(Q_FUNC_INFO);
 
@@ -399,7 +404,7 @@ QFileDevice::FileError ScintillaNext::save()
 
     const QByteArray data = QByteArray::fromRawData((char*)characterPointer(), textLength());
     const QString path = fileInfo.filePath();
-    QFileDevice::FileError writeSuccessful = writeToDisk(data, path, bomType);
+    QFileDevice::FileError writeSuccessful = writeToDisk(data, path, bomType, atomic);
 
     if (writeSuccessful == QFileDevice::NoError) {
         updateTimestamp();

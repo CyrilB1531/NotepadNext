@@ -45,8 +45,8 @@ public:
     enum {
         FIND_TAB = 0,
         REPLACE_TAB = 1,
-        MARK_TAB = 2,
-        FIND_IN_FILES_TAB = 3
+        FIND_IN_FILES_TAB = 2,
+        MARK_TAB = 3
     };
 
     enum class SearchDirection
@@ -81,7 +81,6 @@ public slots:
     void find();
     void findAllInCurrentDocument();
     void findAllInDocuments();
-    void findAllInFiles();
     void count();
     void replace();
     void replaceAll();
@@ -98,6 +97,7 @@ private slots:
 
     void changeTab(int index);
     void browseDirectory();
+    void searchInFiles(bool replace);
 
 private:
     QString findString() const;
