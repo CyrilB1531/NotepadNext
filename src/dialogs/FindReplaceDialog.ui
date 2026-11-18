@@ -316,6 +316,16 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="buttonReplaceInFiles">
+         <property name="text">
+          <string>Replace in Files</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="buttonMarkAll">
          <property name="text">
           <string>Mark All</string>
@@ -352,6 +362,23 @@
          </property>
          <property name="autoDefault">
           <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxInSubFolders">
+         <property name="text">
+          <string>In all su&amp;b-folders</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxInHiddenFolders">
+         <property name="text">
+          <string>In &amp;hidden folders</string>
          </property>
         </widget>
        </item>
@@ -592,16 +619,6 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBoxInSubFolders">
-           <property name="text">
-            <string>In all su&amp;b-folders</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QCheckBox" name="checkBoxBackwardsDirection">
            <property name="text">
             <string>Backward direction</string>
@@ -655,6 +672,9 @@
   <tabstop>buttonFindAllInDocuments</tabstop>
   <tabstop>buttonFindAllInCurrent</tabstop>
   <tabstop>buttonFindAllInFiles</tabstop>
+  <tabstop>buttonReplaceInFiles</tabstop>
+  <tabstop>checkBoxInSubFolders</tabstop>
+  <tabstop>checkBoxInHiddenFolders</tabstop>
   <tabstop>buttonMarkAll</tabstop>
   <tabstop>buttonClearAllMarks</tabstop>
   <tabstop>buttonCopyMarkedText</tabstop>

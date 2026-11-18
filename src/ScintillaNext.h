@@ -133,7 +133,7 @@ public:
 
 public slots:
     void close();
-    QFileDevice::FileError save();
+    QFileDevice::FileError save(bool atomic = false);
     void reload();
     void omitModifications();
     QFileDevice::FileError saveAs(const QString &newFilePath);
